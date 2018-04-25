@@ -1,5 +1,5 @@
 import json
-from rauth import OAuth1Service
+from rauth import OAuth1Service, OAuth1Session
 import sys
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
 
@@ -13,11 +13,11 @@ API_ORIGIN = 'https://api.smugmug.com'
 SERVICE = None
 
 
-def get_service():
+def get_service(credentials_file):
     global SERVICE
     if SERVICE is None:
         try:
-            with open('config.json', 'r') as fh:
+            with open(credentials_file, 'r') as fh:
                 config = json.load(fh)
         except IOError as e:
             print('====================================================')
@@ -26,10 +26,10 @@ def get_service():
             print('====================================================')
             sys.exit(1)
         if type(config) is not dict \
-                or 'key' not in config \
-                or 'secret' not in config\
-                or type(config['key']) is not str \
-                or type(config['secret']) is not str:
+                or 'client_key' not in config \
+                or 'client_secret' not in config\
+                or type(config['client_key']) is not str \
+                or type(config['client_secret']) is not str:
             print('====================================================')
             print('Invalid config.json!')
             print('The expected format is demonstrated in example.json.')
@@ -37,8 +37,8 @@ def get_service():
             sys.exit(1)
         SERVICE = OAuth1Service(
                 name='smugmug-oauth-web-demo',
-                consumer_key=config['key'],
-                consumer_secret=config['secret'],
+                consumer_key=config['client_key'],
+                consumer_secret=config['client_secret'],
                 request_token_url=REQUEST_TOKEN_URL,
                 access_token_url=ACCESS_TOKEN_URL,
                 authorize_url=AUTHORIZE_URL,
@@ -62,3 +62,33 @@ def add_auth_params(auth_url, access=None, permissions=None):
         urlencode(query, True),
         parts.fragment))
 
+
+def update_credentials(credentials_file, access_token, access_token_secret):
+    config = None
+    with open(credentials_file, 'r') as fh:
+        config = json.load(fh)
+        config['access_token'] = access_token
+        config['access_token_secret'] = access_token_secret
+    with open(credentials_file, 'w') as fh:
+        json.dump(config, fh)
+
+        
+def open_session(credentials_file):
+    access_token = None
+    access_token_secret = None
+    client_key = None
+    client_key_secret = None
+    with open(credentials_file, 'r') as fh:
+        config = json.load(fh)
+        access_token = config['access_token']
+        access_token_secret = config['access_token_secret']
+        client_key = config['client_key']
+        client_secret = config['client_secret']
+    
+    session = OAuth1Session(
+        client_key,
+        client_key_secret,
+        access_token=access_token,
+        access_token_secret=access_token_secret)
+
+    return session
