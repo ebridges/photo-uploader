@@ -83,7 +83,7 @@ def open_session(credentials_file):
         access_token = config['access_token']
         access_token_secret = config['access_token_secret']
         client_key = config['client_key']
-        client_secret = config['client_secret']
+        client_key_secret = config['client_secret']
     
     session = OAuth1Session(
         client_key,
