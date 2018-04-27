@@ -23,6 +23,16 @@ def get_auth_tokens(credentials_file):
   return service.get_access_token(rt, rts, params={'oauth_verifier': verifier})
 
 
+def update_credentials(credentials_file, access_token, access_token_secret):
+  config = None
+  with open(credentials_file, 'r') as fh:
+    config = json.load(fh)
+    config['access_token'] = access_token
+    config['access_token_secret'] = access_token_secret
+  with open(credentials_file, 'w') as fh:
+    json.dump(config, fh)
+
+
 def get_service(credentials_file):
   try:
     with open(credentials_file, 'r') as fh:
@@ -70,16 +80,6 @@ def add_auth_params(auth_url, access=None, permissions=None):
     parts.path,
     urlencode(query, True),
     parts.fragment))
-
-
-def update_credentials(credentials_file, access_token, access_token_secret):
-  config = None
-  with open(credentials_file, 'r') as fh:
-    config = json.load(fh)
-    config['access_token'] = access_token
-    config['access_token_secret'] = access_token_secret
-  with open(credentials_file, 'w') as fh:
-    json.dump(config, fh)
 
         
 def open_session(credentials_file):
