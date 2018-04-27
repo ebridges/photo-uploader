@@ -13,6 +13,7 @@ Options:
   --verbose                 Debug-level output.
 '''
 
+from .smugmug_service import SmugMugService
 from .version import __version__
 from .util import configure_logging
 from .auth_util import get_auth_tokens, update_credentials, open_session
@@ -30,10 +31,8 @@ def auth(credentials_file):
 
 
 def user_info(credentials_file):
-  session = open_session(credentials_file)
-  print(session.get(
-    API_ORIGIN + '/api/v2!authuser',
-    headers={'Accept': 'application/json'}).text)
+  service = SmugMugService(credentials_file)
+  print(service.user_info())
   
   
 def main():

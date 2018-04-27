@@ -82,7 +82,7 @@ def add_auth_params(auth_url, access=None, permissions=None):
     parts.fragment))
 
         
-def open_session(credentials_file):
+def init_session(credentials_file):
   access_token = None
   access_token_secret = None
   client_key = None
