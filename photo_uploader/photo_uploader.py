@@ -15,7 +15,7 @@ Options:
 
 from .version import __version__
 from .util import configure_logging
-from .auth_util import API_ORIGIN, get_service, add_auth_params, update_credentials, open_session
+from .auth_util import get_auth_tokens, update_credentials, open_session
 
 from logging import info, debug
 from docopt import docopt
@@ -24,19 +24,7 @@ import sys
 
 def auth(credentials_file):
   info('auth() called.')
-  service = get_service(credentials_file)
-  rt, rts = service.get_request_token(params={'oauth_callback': 'oob'})
-  auth_url = add_auth_params(
-            service.get_authorize_url(rt), access='Full', permissions='Modify')
-  print('Go to %s in a web browser.' % auth_url)
-  sys.stdout.write('Enter the six-digit code: ')
-  sys.stdout.flush()
-  verifier = sys.stdin.readline().strip()  
-  at, ats = service.get_access_token(rt, rts, params={'oauth_verifier': verifier})
-
-  print('Access token: %s' % at)
-  print('Access token secret: %s' % ats)
-
+  at,ats = get_auth_tokens(credentials_file)
   update_credentials(credentials_file, at, ats)
   info('access token updated in [%s]' % credentials_file)
 
