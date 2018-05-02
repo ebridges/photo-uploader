@@ -3,3 +3,4 @@ dist/
 __pycache__
 *.sublime-workspace
 credentials.json
+.web_cache/

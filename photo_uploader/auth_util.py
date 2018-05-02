@@ -2,6 +2,8 @@ import json
 from rauth import OAuth1Service, OAuth1Session
 import sys
 from urllib.parse import urlsplit, urlunsplit, parse_qsl, urlencode
+from cachecontrol import CacheControl
+from cachecontrol.caches.file_cache import FileCache
 
 OAUTH_ORIGIN = 'https://secure.smugmug.com'
 REQUEST_TOKEN_URL = OAUTH_ORIGIN + '/services/oauth/1.0a/getRequestToken'
@@ -100,4 +102,4 @@ def init_session(credentials_file):
     access_token=access_token,
     access_token_secret=access_token_secret)
 
-  return session
+  return CacheControl(session, cache=FileCache('.web_cache'))
