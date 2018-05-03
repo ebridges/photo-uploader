@@ -1,9 +1,9 @@
 '''
 Photo Uploader
 Usage:
-  photo-uploader auth --credentials-file=<PATH>
-  photo-uploader user-info --credentials-file=<PATH>
-  photo-uploader [--verbose]
+  photo-uploader auth --credentials-file=<PATH> [--verbose]
+  photo-uploader user-info --credentials-file=<PATH> [--verbose]
+  photo-uploader upload --credentials-file=<PATH> [--verbose]
   photo-uploader -h | --help
   photo-uploader --version
 Options:
@@ -15,14 +15,19 @@ Options:
 
 from .smugmug_service import SmugMugService
 from .version import __version__
-from .util import configure_logging
-from .auth_util import get_auth_tokens, update_credentials, open_session
+from .util import configure_logging, item_folder
+from .auth_util import get_auth_tokens, update_credentials
+from .upload_util import get_folder_info # upload
 
 from logging import info, debug
 from docopt import docopt
 import sys
 
 
+def upload(credentials_file):
+  info('upload() called.')
+  service = SmugMugService(credentials_file)
+  get_folder_info(service, '2017/2017-02-02')
 def auth(credentials_file):
   info('auth() called.')
   at,ats = get_auth_tokens(credentials_file)
@@ -47,3 +52,5 @@ def main():
   if(args['user-info']):
     user_info(credentials_file)
     
+  if(args['upload']):
+    upload(credentials_file)
