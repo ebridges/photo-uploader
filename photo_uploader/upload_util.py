@@ -1,4 +1,4 @@
-from logging import info, error
+from logging import info, warn
 from .smugmug_service import get_node_path
 
 
@@ -13,13 +13,11 @@ def get_folder_info(service, folder):
   parent_folder = get_node_path(user_info)
   for f in folders:
     current_folder = '%s/%s' % (current_folder, f)
-    info('current_folder: %s' % current_folder)
-    info('parent_folder: %s' % parent_folder)
+    info('current_folder: [%s] / parent_folder: [%s]' % current_folder, parent_folder)
     current_folder_info = service.folder_info(parent_folder['Uri'], current_folder)
     if not current_folder_info:
-      error('Folder: %s not found' % folder)
+      warn('Creating folder: [%s] because it is not found' % folder)
       current_folder_info = service.create_folder(parent_folder, f)
-      info('Folder created: %s' % current_folder_info)
     parent_folder = current_folder_info
-  info('folder_info for %s:\n%s' % (current_folder, current_folder_info))
+  debug('folder_info for %s:\n%s' % (current_folder, current_folder_info))
   return current_folder_info
