@@ -67,4 +67,15 @@ class SmugMugService():
     the node info for the created folder.
     '''
     info('creating folder: [%s]' % folder)
-    pass
+
+    url=u('%s!children' % parent['Uri'])
+    headers=h()
+    payload={
+        'Type': 2, # "Folder" 
+        'Name': folder, 
+        'UrlName': folder, 
+        'EffectivePrivacy': 'Private'
+    }
+
+    folder_info = self.session.post( url, data=payload, headers=headers ).json()
+    return folder_info['Response']['Node']
