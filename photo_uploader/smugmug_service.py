@@ -60,3 +60,11 @@ class SmugMugService():
     debug('got folder info: %s' % node_info)
     return node_info
 
+
+  def create_folder(self, parent, folder):
+    '''
+    Given a `folder` create it as a child of `parent`, returning
+    the node info for the created folder.
+    '''
+    info('creating folder: [%s]' % folder)
+    pass
