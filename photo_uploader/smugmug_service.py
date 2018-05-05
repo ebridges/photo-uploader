@@ -84,5 +84,13 @@ class SmugMugService():
         'EffectivePrivacy': 'Private'
     }
 
-    folder_info = self.session.post( url, data=payload, headers=headers ).json()
+    response = self.session.post(url, data=payload, headers=headers)
+    try:
+      response.raise_for_status()
+    except exceptions.HTTPError as err:
+      error(str(err))
+      for key, val in response.headers.items():
+        error('%s : %s' % (key, val))
+      sys.exit(1)
+    folder_info = response.json()
     return folder_info['Response']['Node']
