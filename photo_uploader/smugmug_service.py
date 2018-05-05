@@ -1,9 +1,12 @@
 import sys
+import re
+from enum import Enum
 from logging import info, debug, error
 from requests import exceptions
 from .auth_util import init_session
 
 API_ORIGIN = 'https://api.smugmug.com'
+
 
 def h(add_headers=None): #pylint: disable=C0103
   '''
@@ -54,6 +57,26 @@ def get_node_for_folder(folder_info, folder):
   return None
 
 
+def get_node_type(folder):
+  for ntype in NodeType:
+    if(ntype.regex().match(folder)):
+      return ntype.smugmug_ordinal()
+
+class NodeType(Enum):
+  ALBUM = (4, r'^\d{4}-\d{2}-\d{2}$')
+  FOLDER = (2, r'^\d{4}$')
+
+  def __init__(self, ordinal, regex):
+    self.ordinal = ordinal
+    self.pattern = re.compile(regex)
+
+  def regex(self):
+    return self.pattern
+
+  def smugmug_ordinal(self):
+    return self.ordinal
+
+
 class SmugMugService():
   def __init__(self, credentials_file):
     self.session = init_session(credentials_file)
@@ -84,10 +107,15 @@ class SmugMugService():
     '''
     info('creating folder: [%s]' % folder)
 
+    node_type = get_node_type(folder)
+    if not node_type:
+      raise ValueError('unrecognized folder name: [%s]' % folder)
+    info('creating folder [%s] of type: [%d]' % (folder, node_type))
+
     url = u('%s!children' % parent['Uri'])
     headers = h()
     payload = {
-        'Type': 2, # "Folder"
+        'Type': node_type,
         'Name': folder,
         'UrlName': folder,
         'EffectivePrivacy': 'Private'
