@@ -13,44 +13,45 @@ Options:
   --verbose                 Debug-level output.
 '''
 
+from logging import info
+
+from docopt import docopt
 from .smugmug_service import SmugMugService
 from .version import __version__
-from .util import configure_logging, item_folder
+from .util import configure_logging
 from .auth_util import get_auth_tokens, update_credentials
 from .upload_util import get_folder_info # upload
-
-from logging import info, debug
-from docopt import docopt
-import sys
 
 
 def upload(credentials_file):
   info('upload() called.')
   service = SmugMugService(credentials_file)
-  get_folder_info(service, '2017/2017-02-02')
+  get_folder_info(service, '2018/2017-02-02')
+
+
 def auth(credentials_file):
   info('auth() called.')
-  at,ats = get_auth_tokens(credentials_file)
-  update_credentials(credentials_file, at, ats)
+  access_token, access_token_secret = get_auth_tokens(credentials_file)
+  update_credentials(credentials_file, access_token, access_token_secret)
   info('access token updated in [%s]' % credentials_file)
 
 
 def user_info(credentials_file):
   service = SmugMugService(credentials_file)
   print(service.user_info())
-  
-  
+
+
 def main():
   args = docopt(__doc__, version=__version__)
   configure_logging(args['--verbose'])
 
   credentials_file = args['--credentials-file']
 
-  if(args['auth']):
+  if args['auth']:
     auth(credentials_file)
-    
-  if(args['user-info']):
+
+  if args['user-info']:
     user_info(credentials_file)
-    
-  if(args['upload']):
+
+  if args['upload']:
     upload(credentials_file)

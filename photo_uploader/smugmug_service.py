@@ -1,22 +1,34 @@
+import sys
+from logging import info, debug, error
+from requests import exceptions
 from .auth_util import init_session
-from logging import info, debug
 
 API_ORIGIN = 'https://api.smugmug.com'
 
-def h(add_headers=None):
+def h(add_headers=None): #pylint: disable=C0103
+  '''
+  Generates standard headers for a request, with option to add more.
+  '''
   headers = {'Accept': 'application/json'}
-  if(add_headers):
+  if add_headers:
     for key in add_headers:
+      debug('Adding header [%s] to request' % key)
       headers[key] = add_headers[key]
   return headers
 
 
-def u(path):
+def u(path): #pylint: disable=C0103
+  '''
+  Binds a path to the host part to create a URL.
+  '''
   debug('Creating URL for path [%s]' % path)
   return '%s%s' % (API_ORIGIN, path)
 
 
 def get_node_path(folder_info):
+  '''
+  Gets a node from a blob of JSON from the API.
+  '''
   response = folder_info['Response']
 
   if 'User' in response:
@@ -34,7 +46,9 @@ def get_node_for_folder(folder_info, folder):
     return None
 
   nodes = folder_info['Response']['Node']
+  info("nodes: %s" % nodes)
   for node in nodes:
+    info(">>node: %s" % node)
     if node['UrlPath'] == folder:
       return node
   return None
@@ -51,11 +65,15 @@ class SmugMugService():
 
 
   def folder_info(self, parent, folder):
+    '''
+    For a given `folder` name, get its node from its `parent`.
+    '''
     info('getting folder info for: %s' % folder)
-    folder_info = self.session.get(u('%s!children' % parent), 
-      headers=h()).json()
+    parent_node_uri = parent['Uri']
+    folder_info = self.session.get(u('%s!children' % parent_node_uri),
+                                   headers=h()).json()
     node_info = get_node_for_folder(folder_info, folder)
-    debug('got folder info: %s' % node_info)
+    debug('got folder node: %s' % node_info)
     return node_info
 
 
@@ -66,12 +84,12 @@ class SmugMugService():
     '''
     info('creating folder: [%s]' % folder)
 
-    url=u('%s!children' % parent['Uri'])
-    headers=h()
-    payload={
-        'Type': 2, # "Folder" 
-        'Name': folder, 
-        'UrlName': folder, 
+    url = u('%s!children' % parent['Uri'])
+    headers = h()
+    payload = {
+        'Type': 2, # "Folder"
+        'Name': folder,
+        'UrlName': folder,
         'EffectivePrivacy': 'Private'
     }
 

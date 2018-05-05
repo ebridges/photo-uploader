@@ -1,4 +1,4 @@
-from logging import basicConfig, INFO, DEBUG, debug
+from logging import basicConfig, INFO, DEBUG
 from os import path
 
 def configure_logging(level):
@@ -7,9 +7,9 @@ def configure_logging(level):
   else:
     level = DEBUG
   basicConfig(
-    format='[%(asctime)s][%(levelname)s] %(message)s',
-    datefmt='%Y/%m/%d %H:%M:%S',
-    level=level)
+      format='[%(asctime)s][%(levelname)s][%(module)s] %(message)s',
+      datefmt='%Y/%m/%d %H:%M:%S',
+      level=level)
 
 
 def item_folder(item):
