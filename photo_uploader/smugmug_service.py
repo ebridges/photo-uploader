@@ -26,6 +26,13 @@ def get_node_path(folder_info):
 
 
 def get_node_for_folder(folder_info, folder):
+  if 'Response' not in folder_info:
+    raise ValueError('Expected a `Response` element in Node JSON.')
+
+  if 'Node' not in folder_info['Response']:
+    info('Folder [%s] does not exist as a child of [%s]' % (folder, folder_info['Response']['Uri']))
+    return None
+
   nodes = folder_info['Response']['Node']
   for node in nodes:
     if node['UrlPath'] == folder:
