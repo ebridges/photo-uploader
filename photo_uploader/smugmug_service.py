@@ -22,7 +22,7 @@ def get_node_path(folder_info):
   if 'User' in response:
     return response['User']['Uris']['Node']
   else:
-    return node['Uri']
+    return folder_info['Uri']
 
 
 def get_node_for_folder(folder_info, folder):
