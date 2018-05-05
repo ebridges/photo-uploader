@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "/Users/ebridges/.virtualenvs/photo-uploader/bin/python",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
+}
