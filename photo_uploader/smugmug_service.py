@@ -40,23 +40,14 @@ def get_node_for_folder(folder_info, folder):
   return None
 
 
-def node_path(info):
-  return info['Response']['User']['Uris']['Node']['Uri']
-
-
 class SmugMugService():
   def __init__(self, credentials_file):
     self.session = init_session(credentials_file)
 
 
   def user_info(self):
-    return self.session.get(u('/api/v2!authuser'), 
-      headers=h()).json()
-
-
-  def root_folder(self):
-    info = self.user_info()
-    return node_path(info)
+    return self.session.get(u('/api/v2!authuser'),
+                            headers=h()).json()
 
 
   def folder_info(self, parent, folder):
