@@ -22,3 +22,11 @@ def get_folder_info(service, folder):
     parent_folder = current_folder_info
   debug('folder_info for %s:\n%s' % (current_folder, current_folder_info))
   return current_folder_info
+
+
+def upload(service, album, item):
+  '''
+  Given an item (an image or video), upload it into the given album.
+  '''
+  info('folder_info: [%s], image[%s]' % (album, item))
+  return None

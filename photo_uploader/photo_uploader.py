@@ -14,23 +14,28 @@ Options:
   --verbose                 Debug-level output.
 '''
 
-from logging import info
+from logging import info, error
 
 from docopt import docopt
 from .smugmug_service import SmugMugService
 from .version import __version__
 from .util import configure_logging, item_folder
 from .auth_util import get_auth_tokens, update_credentials
-from .upload_util import get_folder_info # upload
+from .upload_util import get_folder_info, upload
 
 
-def upload(credentials_file, item):
+def upload_item(credentials_file, item):
   info('upload() called.')
   service = SmugMugService(credentials_file)
   folder = item_folder(item)
   if folder:
     folder_info = get_folder_info(service, folder)
     info('folder info:\n%s' % folder_info)
+    success = upload(service, folder_info, item)
+    if success:
+      info('successfully uploaded [%s]' % item)
+    else:
+      error('error uploading [%s]' % item)
 
 
 def auth(credentials_file):
@@ -59,4 +64,4 @@ def main():
 
   if args['upload']:
     image = args['--image']
-    upload(credentials_file, image)
+    upload_item(credentials_file, image)
