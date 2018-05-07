@@ -80,8 +80,9 @@ def get_node_for_folder(folder_info, folder):
 
 def get_node_type(folder):
   for ntype in NodeType:
-    if(ntype.regex().match(folder)):
+    if ntype.regex().match(folder):
       return ntype.smugmug_ordinal()
+  return None
 
 class NodeType(Enum):
   ALBUM = (4, r'^\d{4}-\d{2}-\d{2}$')
