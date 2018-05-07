@@ -1,9 +1,11 @@
+import os
 import sys
 import re
 from enum import Enum
 from logging import info, debug, error
 from requests import exceptions
 from .auth_util import init_session
+from .util import md5sum, mime_type, read_item_data
 
 API_ORIGIN = 'https://api.smugmug.com'
 
@@ -18,6 +20,25 @@ def h(add_headers=None): #pylint: disable=C0103
       debug('Adding header [%s] to request' % key)
       headers[key] = add_headers[key]
   return headers
+
+
+def upload_headers(album_uri, item):
+  '''
+  Given an `item` create all headers containing information
+  required to upload it to an `album`.
+  '''
+  file_size = os.path.getsize(item)
+  file_type = mime_type(item)
+  md5_sum = md5sum(item)
+  headers = {
+      'Content-MD5': md5_sum,
+      'Content-Type': file_type,
+      'Content-Length': file_size,
+      'X-Smug-AlbumUri': album_uri,
+      'X-Smug-ResponseType': 'JSON',
+      'X-Smug-Version': 'v2'
+  }
+  return h(headers)
 
 
 def u(path): #pylint: disable=C0103
