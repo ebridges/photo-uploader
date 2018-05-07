@@ -39,10 +39,10 @@ def md5sum(filename, block_size=2**20):
   Returns MD5 checksum for given file.
   '''
   with open(filename, mode='rb') as file:
-    d = md5()
+    digest = md5()
     for buf in iter(partial(file.read, block_size), b''):
-      d.update(buf)
-  return d.hexdigest()
+      digest.update(buf)
+  return digest.hexdigest()
 
 
 def mime_type(filename):
@@ -60,4 +60,3 @@ def read_item_data(filename):
   with open(filename, "rb") as binary_file:
       # Reads the whole file at once
       return binary_file.read()
-
