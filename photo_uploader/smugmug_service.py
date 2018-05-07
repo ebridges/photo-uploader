@@ -152,3 +152,23 @@ class SmugMugService():
       sys.exit(1)
     folder_info = response.json()
     return folder_info['Response']['Node']
+
+
+  def upload_item_to_album(self, album, item):
+    '''
+    Given an image or video `item`, upload it to the given `album`.
+    '''
+    info('uploading [%s] to [%s].' % (item, album))
+
+    url = 'https://upload.smugmug.com'
+    headers = upload_headers(album['Uri'], item)
+    image_data = read_item_data(item)
+
+    response = self.session.post(
+        url,
+        data=image_data,
+        header_auth=True,
+        headers=headers
+    )
+
+    return response
