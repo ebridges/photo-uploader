@@ -24,7 +24,7 @@ def get_folder_info(service, folder):
   return current_folder_info
 
 
-def upload(service, album, item):
+def upload_item_to_album(service, album, item):
   '''
   Given an item (an image or video), upload it into the given album.
   '''

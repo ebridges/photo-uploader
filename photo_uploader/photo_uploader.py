@@ -21,7 +21,7 @@ from .smugmug_service import SmugMugService
 from .version import __version__
 from .util import configure_logging, item_folder
 from .auth_util import get_auth_tokens, update_credentials
-from .upload_util import get_folder_info, upload
+from .upload_util import get_folder_info, upload_item_to_album
 
 
 def upload_item(credentials_file, item):
@@ -31,7 +31,7 @@ def upload_item(credentials_file, item):
   if folder:
     folder_info = get_folder_info(service, folder)
     info('folder info:\n%s' % folder_info)
-    success = upload(service, folder_info, item)
+    success = upload_item_to_album(service, folder_info, item)
     if success:
       info('successfully uploaded [%s]' % item)
     else:
