@@ -1,6 +1,6 @@
-from logging import info, warn, debug
+from logging import info, warn, debug, error
+from .util import valid_type
 from .smugmug_service import get_node_path
-
 
 def get_folder_info(service, folder):
   '''
@@ -29,4 +29,8 @@ def upload(service, album, item):
   Given an item (an image or video), upload it into the given album.
   '''
   info('folder_info: [%s], image[%s]' % (album, item))
-  return None
+  if not valid_type(item):
+    error('unsupported file type [%s]' % item)
+    return None
+
+  return service.upload_item_to_album(album, item)
