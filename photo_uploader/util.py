@@ -15,7 +15,5 @@ def configure_logging(level):
 def item_folder(item):
   if not item:
     return None
-
   folder = path.dirname(item)
-
   return folder[2:] if(folder.startswith('./')) else folder
