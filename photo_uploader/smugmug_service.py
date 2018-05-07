@@ -140,7 +140,9 @@ class SmugMugService():
         'Type': node_type,
         'Name': folder,
         'UrlName': folder,
-        'EffectivePrivacy': 'Private'
+        'EffectivePrivacy': 3, # Private
+        'OriginalSizes' : 1,
+        'Filenames' : 1
     }
 
     response = self.session.post(url, data=payload, headers=headers)
